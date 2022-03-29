@@ -9,11 +9,11 @@
 ### 安装 (installation)
 - 直接引入脚本 (Import scripts directly) <br/>
 ```html
-<script src="https://unpkg.com/@caught/core"></script>
+<script src="https://unpkg.com/caught-core"></script>
 ```
 - 与打包工具一起使用 (Use with the packaging tool) <br/> 
 ```js
-npm install @caught/core -save
+npm install caught-core -save
 ```
 ### 使用方法 (usage)
 ```js
