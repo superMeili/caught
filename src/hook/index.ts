@@ -5,15 +5,15 @@ import type { Caught, Hook, HooksMap, Register } from '../types'
 
 export function createHooksMap(): HooksMap {
   const hooksMap = Object.create(null)
-  for(let key in HookNames) {
+  Object.values(HookNames).forEach(key=>{
     hooksMap[key] = []
-  }
+  })
   return hooksMap
 }
 
 export function createHookRegister(hm: HooksMap): Register {
   const register = Object.create(null)
-  for(let key in HookNames) {
+  Object.values(HookNames).forEach(key=>{
     register[key] = function (pluginName:string, hook: Hook) {
       const hookArray = hm[key as HookNames]
       const pluginNameList = hookArray.pluginNameList || (hookArray.pluginNameList = [])
@@ -22,7 +22,7 @@ export function createHookRegister(hm: HooksMap): Register {
         pluginNameList.push(pluginName)
       }
     }
-  }
+  })
   return register 
 }
 
