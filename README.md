@@ -28,7 +28,7 @@ var caught = window.createCaught({
 var createCustomInsert = caught.createCustomInsert
 var proxyCaught = caught.proxyCaught
 // 使用npm包 (Use NPM package)
-import createCaught from '@caught/core'
+import createCaught from 'caught-core'
 
 const { createCustomInsert, proxyCaught } = createCaught({
   //...options
@@ -71,7 +71,7 @@ const { createCustomInsert, proxyCaught } = createCaught({
   }
 }
 ```
-- 调用notify的目的有两个：1. 用于失败重试功能， 2. caught内存优化，若不调用，caught依然能正常运行，但失败重试功能讲失效
+- 调用notify的目的有两个：1. 用于失败重试功能， 2. caught内存优化，若不调用，caught依然能正常运行，但失败重试功能将失效
 
 3. createCaught返回值说明
 - createCaught返回一个对象，目前包含2个属性 createCustomInsert 及 proxyCaught
@@ -98,9 +98,20 @@ const { createCustomInsert, proxyCaught } = createCaught({
   function userHandle() {
     // 假设出现了任何未捕获的错误（Any uncaught errors occurred）
   }
-  const proxyUserHandle = proxyCaught(userHandle)
+  const proxyUserHandle = proxyCaught(userHandle, {
+    flag: 'todo'
+  })
   proxyUserHandle()
   // 此时proxyUserHandle将自动捕获到userHandle中的错误，并交给caught的调度系统处理
+```
+- proxyCaught包含2个参数，一个是被代理的函数，一个是代理配置
+```js
+// 代理配置
+type proxyConfig = {
+  flag: any, // 错误标识
+  withArgs?: boolean, // 捕获到的错误是否携带参数
+  others?: any, // 其他开发者自定义信息
+} | string // 代理配置可传入一个字符串，caught内部将默认识别为flag
 ```
 - proxyCaught对原函数是无害的，可以将代理后的函数完全等价于原函数（包括原型链等都进行了衔接）
 
@@ -118,7 +129,7 @@ const { createCustomInsert, proxyCaught } = createCaught({
 
 
 5. plugins选项说明
-类似于webpack插件，caught也提供了插件扩展的能力，具体用法如下
+类似于webpack插件，caught也提供了插件扩展的能力，通过注册钩子来实现功能扩展，具体用法如下
 ```js
 class PluginDemo {
   apply(register) { // register 用于hook注册
@@ -129,8 +140,9 @@ class PluginDemo {
           name: 'meili',
         }
       }
+      // 返回的对象将与原info中的meta信息合并
     }
-    register.addInfo(handler) // 注册 addInfo 钩子
+    register.addInfo('add-info-plugin', handler) // 注册 addInfo 钩子， handler为回调函数
   }
 }
 
@@ -152,4 +164,26 @@ createCaught({
 - staticError: 静态资源加载失败事件钩子，事件触发时会执行此钩子，并传入错误信息info及错误事件对象event，开发者可针对此事件进行自定义操作，若回调函数返回一个对象，则会人为是额外的信息，将与meta合并
 - promiseRejection: 未catch的promsie事件钩子，事件触发时会执行此钩子，并传入错误信息info及错误事件对象event，开发者可针对此事件进行自定义操作，若回调函数返回一个对象，则会人为是额外的信息，将与meta合并
 - schedulable: 当caught调度系统初始化完成时会执行此钩子，此时会将createCustomInsert方法作为参数传递到回调函数中，用户可以在此阶段自定义捕获内容。（proxyCaught 方法就是在此时生成的） 
+
+7. 内置错误类型说明
+- proxy --- 由proxyCaught代理捕获到的错误
+- jsError --- error事件监听到的错误
+- staticError --- 静态资源加载失败
+- promiseRejection --- 未catch的promise
+
+8. 内置的错误信息包含的内容
+```js
+interface Info {
+  type: string // 错误类型
+  flag: string // 内部生成的错误标识 `${type}-${flag}-${index}${extra && '-' + extra}`
+  meta?: Meta | Meta[] // 额外的信息，比如proxyCaught可选的一些信息：proxyCaught: { args, others }
+  count?: number // 同一错误出现的次数
+  error?: any // 错误信息
+  message?: string // error事件对象中的 message
+  filename?: string // error事件对象中的 filename （文件名）
+  lineno?: number // error事件对象中的 lineno （行）
+  colno?: number // error事件对象中的 colno （列）
+  time?: number // 错误捕获的时间戳（ms）
+}
+```
 
