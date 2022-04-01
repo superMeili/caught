@@ -20,14 +20,17 @@
             }
           }
         }
-        register.addInfo(handler) // 注册 addInfo 钩子
+        register.addInfo('add', handler) // 注册 addInfo 钩子
       }
     }
 
     const caught = createCaught({
       errorHandler: (errs) => {
         console.log('错误：', errs)
-      }
+      },
+      plugins: [
+        new PluginDemo()
+      ]
     })
 
     const fn = caught.proxyCaught(() => {
