@@ -1,6 +1,6 @@
 {
   "name": "caught-core",
-  "version": "0.0.1-beta",
+  "version": "0.0.2-beta",
   "description": "A tool for JS error capture",
   "main": "dist/caught-esm.js",
   "module": "dist/caught-esm.js",

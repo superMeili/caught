@@ -21,9 +21,11 @@ export function callHook(caught: Caught, hookName: ValueOf<typeof HookNames>, ar
 }
 
 export function updateMeta(originalInfo: CustomInfo, meta: any) {
-  const originalMeta = originalInfo.meta?.[0]
-  isObject(meta) && (originalInfo.meta = [originalMeta ? {
-    ...originalMeta,
-    ...meta
-  } : meta])
+  const originalMeta = originalInfo.meta
+  if (isObject(meta)) {
+    originalInfo.meta = originalMeta ? {
+      ...originalMeta,
+      ...meta
+    } : meta
+  }
 }
