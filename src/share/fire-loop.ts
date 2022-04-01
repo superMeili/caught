@@ -21,7 +21,6 @@ export default function fireLoop (callback: Function, noWait?: boolean) {
   if (noWait) return fireCbs()
   if (pending) {
     pending = false
-    console.log('来了老弟')
     if (isNative(Promise)) {
       Promise.resolve().then(fireCbs)
     }else {

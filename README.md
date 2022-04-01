@@ -109,4 +109,13 @@ createCaught({
   ]
 })
 ```
+5. 详细的钩子说明
+
+- addInfo: 此钩子一般用于添加额外的信息，开发者需要在回调函数中返回一个信息对象{ [key: any]： value: any }, 此对象将与caught内部提供的meta对象（若存在，如proxyCaught处理时）合并。
+- fail: 此钩子将在notify(fasle)时触发, 参数为当前捕获的错误信息列表
+- success: 此钩子将在notify(true)时触发, 参数为当前捕获的错误信息列表
+- jsError: js错误事件钩子，error事件触发时会执行此钩子，并传入错误信息info及错误事件对象event，开发者可针对此事件进行自定义操作，若回调函数返回一个对象，则会人为是额外的信息，将与meta合并
+- staticError: 静态资源加载失败事件钩子，事件触发时会执行此钩子，并传入错误信息info及错误事件对象event，开发者可针对此事件进行自定义操作，若回调函数返回一个对象，则会人为是额外的信息，将与meta合并
+- promiseRejection: 未catch的promsie事件钩子，事件触发时会执行此钩子，并传入错误信息info及错误事件对象event，开发者可针对此事件进行自定义操作，若回调函数返回一个对象，则会人为是额外的信息，将与meta合并
+- schedulable: 当caught调度系统初始化完成时会执行此钩子，此时会将createCustomInsert方法作为参数传递到回调函数中，用户可以在此阶段自定义捕获内容。（proxyCaught 方法就是在此时生成的） 
 

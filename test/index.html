@@ -10,6 +10,20 @@
 <body>
   <img src="static-error" alt="">
   <script>
+    class PluginDemo {
+      apply(register) { // register 用于hook注册
+        const handler = info => {
+          const { type, flag, error, meta } = info
+          return {
+            myInfo: {
+              name: `${String(error)}meili`,
+            }
+          }
+        }
+        register.addInfo(handler) // 注册 addInfo 钩子
+      }
+    }
+
     const caught = createCaught({
       errorHandler: (errs) => {
         console.log('错误：', errs)

@@ -68,7 +68,6 @@ class Scheduler implements  CaughtScheduler {
         flag,
         time: +new Date
       }
-      console.log('我执行了', 1111111111, info.flag)
       _this.pendingInsertInfo(info)
     }
   }
