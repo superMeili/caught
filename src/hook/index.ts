@@ -1,11 +1,11 @@
-import { isArray } from '../share'
+import { isArray, getObjectValues } from '../share'
 import { HookNames } from '../types'
 import type { Caught, Hook, HooksMap, Register } from '../types'
 
 
 export function createHooksMap(): HooksMap {
   const hooksMap = Object.create(null)
-  Object.values(HookNames).forEach(key=>{
+  getObjectValues(HookNames).forEach(key=>{
     hooksMap[key] = []
   })
   return hooksMap
@@ -13,7 +13,7 @@ export function createHooksMap(): HooksMap {
 
 export function createHookRegister(hm: HooksMap): Register {
   const register = Object.create(null)
-  Object.values(HookNames).forEach(key=>{
+  getObjectValues(HookNames).forEach(key=>{
     register[key] = function (pluginName:string, hook: Hook) {
       const hookArray = hm[key as HookNames]
       const pluginNameList = hookArray.pluginNameList || (hookArray.pluginNameList = [])

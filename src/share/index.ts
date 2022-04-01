@@ -1,3 +1,5 @@
+import { ValueOf } from '@/types'
+
 export * from './create-flag'
 
 export function createOnceHandler(fn: Function) {
@@ -24,3 +26,13 @@ export const isPlainObject = (val: unknown): val is object => toRawType(val) ===
 export const isFunction = (val: unknown): val is Function => typeof val === 'function'
 export const isArray = (val: unknown): val is any[] => Array.isArray(val)
 export const isNative = (Ctor: Function) => typeof Ctor === 'function' && /native code/.test(Ctor.toString())
+
+export const getObjectValues = (obj:object) => {
+  const val:ValueOf<typeof obj>[] = []
+  for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj,key)) {
+          val.push(obj[key as keyof typeof obj])
+      }
+  }
+  return val;
+}
