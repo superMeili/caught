@@ -1,5 +1,5 @@
 import { isFunction, isPlainObject, isNative, hasProto } from '../share'
-import type { AnyFunc, proxyConfig, Caught } from '../types'
+import type { AnyFunc, ProxyConfig, Caught } from '../types'
 
 
 function setInternalPropWritable (target: AnyFunc, writable: boolean) {
@@ -54,7 +54,7 @@ export default function proxyCreater (caught: Caught) {
 
   const scheduler = caught.scheduler
 
-  function proxyCaught<T extends AnyFunc>(rawFunc: T, config: proxyConfig) {
+  function proxyCaught<T extends AnyFunc>(rawFunc: T, config: ProxyConfig) {
     if (!isFunction(rawFunc)) {
       if (process.env.NODE_ENV !== 'production') {
         console.error('The first parameter of createCaught must be the function type')

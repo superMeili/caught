@@ -21,10 +21,9 @@ const baseConfig = {
     tsPlugin({
       check: true,
       tsconfig: resolve('tsconfig.json'),
-      cacheRoot: resolve('node_modules/.rts2_cache'),
       tsconfigOverride: {
         compilerOptions: {
-          declaration: true,
+          declaration: true
         }
       }
     }),

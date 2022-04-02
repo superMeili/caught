@@ -85,14 +85,14 @@ export interface CaughtScheduler {
   stop: boolean
 }
 
-export type proxyConfig = {
+export type ProxyConfig = {
   flag: any,
   withArgs?: boolean,
   others?: any,
 } | string
 
 export interface ProxyCaught {
-  <T extends AnyFunc>(rawFunc: T, config: proxyConfig): (this: any, ...args: Parameters<T>) => any
+  <T extends AnyFunc>(rawFunc: T, config: ProxyConfig): (this: any, ...args: Parameters<T>) => any
 }
 
 export interface Caught {
