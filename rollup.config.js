@@ -1,6 +1,5 @@
 import path from 'path'
 import tsPlugin from 'rollup-plugin-typescript2'
-import replacePlugin from '@rollup/plugin-replace'
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 const resolve = p => path.resolve(__dirname, p)
@@ -45,7 +44,7 @@ const outputConfig = {
   'global': {
     file: resolve(`dist/caught-global.js`),
     format: `iife`,
-    name: 'createCaught'
+    name: 'createCaught',
   },
 }
 
@@ -53,24 +52,27 @@ const bundlingConfigArr =
 formats.map(format => {
   const output = outputConfig[format]
   const plugins = []
-  if (format === 'global') {
-    plugins.push(replacePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    }))
-  }
-  if (format === 'global' || format === 'esm-browser') {
+  const isForScriptUse = format === 'global' || format === 'esm-browser'
+  if (isForScriptUse) {
+    const replacePlugin = require('@rollup/plugin-replace')
     const { terser } = require('rollup-plugin-terser')
-    plugins.push(terser({
-      module: /^esm/.test(format),
-      compress: {
-        ecma: 2015,
-        pure_getters: true
-      },
-      safari10: true
-    }))
+    plugins.push(
+      replacePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production')
+      }),
+      terser({
+        module: /^esm/.test(format),
+        compress: {
+          ecma: 2015,
+          pure_getters: true
+        },
+        safari10: true
+      })
+    )
   }
   return {
     ...baseConfig,
+    input: isForScriptUse ? resolve('./src/index.global.ts') : baseConfig.input,
     output,
     plugins: [ ...baseConfig.plugins, ...plugins ]
   }
