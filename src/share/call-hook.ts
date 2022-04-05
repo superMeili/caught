@@ -7,7 +7,7 @@ export function callHook(caught: Caught, hookName: ValueOf<typeof HookNames>, ar
   try {
     hooks = caught.hooksMap[hookName]
     for (let i = 0; i < hooks.length; i++) {
-      const cb = hooks[i]
+      const cb = hooks[i] as any
       if(isFunction(cb)) {
         const r = cb.apply(null, args)
         isFunction(handler) && handler(r)

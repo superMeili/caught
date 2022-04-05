@@ -27,11 +27,12 @@ export const isFunction = (val: unknown): val is Function => typeof val === 'fun
 export const isArray = (val: unknown): val is any[] => Array.isArray(val)
 export const isNative = (Ctor: Function) => typeof Ctor === 'function' && /native code/.test(Ctor.toString())
 
-export const getObjectValues = (obj:object) => {
-  const val:ValueOf<typeof obj>[] = []
+export const getObjectValues = <T extends object>(obj: T) => {
+  type Value = ValueOf<T>
+  const val: Value[] = []
   for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj,key)) {
-          val.push(obj[key as keyof typeof obj])
+          val.push(obj[key as keyof T])
       }
   }
   return val;

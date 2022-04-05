@@ -63,16 +63,27 @@ export enum HookNames {
   PROMISERECTIONHOOK = 'promiseRejection'
 }
 
-export interface Hook {
-  (...args: any): any
+export type HookType = {
+  [HookNames.ADDHOOK]: (info?: Info) => Meta | void
+  [HookNames.JSERRORHOOK]: (info?: Info, e?: Event) => Meta | void
+  [HookNames.STATICERRORHOOK]: (info?: Info, e?: Event) => Meta | void
+  [HookNames.PROMISERECTIONHOOK]: (info?: Info, e?: Event) => Meta | void
+  [HookNames.SUCCESSHOOK]: (InfoList?: InfoList, index?: number) => void
+  [HookNames.FAILHOOK]: (InfoList?: InfoList, index?: number) => void
+  [HookNames.SCHEDULABLEHOOK]: (createCustomInsert?: CreateCustomInsert) => void
 }
 
-export class HookArray extends Array<Hook> {
+export class HookArray<T> extends Array<T> {
   pluginNameList?: string[]
 }
 
-export type HooksMap = Record<HookNames, HookArray>
-export type Register = Record<HookNames, (pluginName: string, hook: Hook) => void>
+export type HooksMap = {
+  [key in HookNames]: HookArray<HookType[key]>
+}
+
+export type Register = {
+  [key in HookNames]: (pluginName: string, hook: HookType[key]) => void
+}
 
 export interface CreateCustomInsert {
   (type: string, flag: string, extra?: any): (info: CustomInfo) => void
